@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emiliano Vega — Desarrollador Web & IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Cabinet+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #08090a;
+  --surface: #0f1114;
+  --surface2: #161a1f;
+  --border: #1e2329;
+  --border2: #252c35;
+  --accent: #00e5ff;
+  --accent2: #7c3aed;
+  --accent3: #f59e0b;
+  --text: #e8eaed;
+  --muted: #5a6478;
+  --muted2: #8892a4;
+  --font-display: 'Clash Display', 'Syne', sans-serif;
+  --font-body: 'Cabinet Grotesk', 'DM Sans', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ── CURSOR ── */
+.cursor {
+  width: 8px; height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transition: transform 0.15s ease;
+  mix-blend-mode: difference;
+}
+
+.cursor-ring {
+  width: 36px; height: 36px;
+  border: 1px solid rgba(0,229,255,0.4);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9998;
+  transition: all 0.08s ease;
+}
+
+/* ── NOISE OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.4;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 48px;
+  transition: all 0.4s;
+}
+
+nav.scrolled {
+  background: rgba(8,9,10,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 48px;
+}
+
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-logo .dot {
+  width: 6px; height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: blink 2s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.nav-links {
+  display: flex;
+  gap: 32px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--muted2);
+  text-decoration: none;
+  transition: color 0.2s;
+  text-transform: uppercase;
+}
+
+.nav-links a:hover { color: var(--text); }
+
+.nav-contact {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-decoration: none;
+  border: 1px solid rgba(0,229,255,0.3);
+  padding: 8px 18px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.nav-contact:hover {
+  background: rgba(0,229,255,0.08);
+  border-color: var(--accent);
+}
+
+@media(max-width:768px) {
+  nav { padding: 16px 20px; }
+  nav.scrolled { padding: 12px 20px; }
+  .nav-links, .nav-contact { display: none; }
+}
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 0 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+@media(max-width:768px) { .hero { padding: 0 20px; } }
+
+/* Grid background */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+}
+
+/* Glow */
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 20%; left: 60%;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(124,58,237,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 900px;
+}
+
+.hero-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0,229,255,0.06);
+  border: 1px solid rgba(0,229,255,0.15);
+  border-radius: 100px;
+  padding: 6px 14px;
+  font-size: 0.75rem;
+  color: var(--accent);
+  letter-spacing: 0.06em;
+  margin-bottom: 32px;
+  animation: heroFade 0.8s ease both;
+}
+
+.status-dot {
+  width: 6px; height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: blink 1.5s infinite;
+}
+
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 8vw, 7rem);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  margin-bottom: 24px;
+  animation: heroFade 0.8s 0.1s ease both;
+}
+
+.hero h1 .line2 {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(232,234,237,0.3);
+}
+
+.hero h1 .accent { color: var(--accent); }
+
+.hero-desc {
+  font-size: clamp(0.95rem, 2vw, 1.15rem);
+  color: var(--muted2);
+  line-height: 1.7;
+  max-width: 520px;
+  margin-bottom: 40px;
+  font-weight: 300;
+  animation: heroFade 0.8s 0.2s ease both;
+}
+
+.hero-desc strong { color: var(--text); font-weight: 500; }
+
+.hero-actions {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  animation: heroFade 0.8s 0.3s ease both;
+}
+
+.btn-main {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background: var(--accent);
+  color: var(--bg);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: all 0.2s;
+  border: none;
+  cursor: none;
+}
+
+.btn-main:hover { background: #33eaff; transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,229,255,0.25); }
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
+  border-radius: 6px;
+  border: 1px solid var(--border2);
+  transition: all 0.2s;
+  cursor: none;
+}
+
+.btn-outline:hover { border-color: var(--muted2); background: var(--surface); }
+
+.hero-scroll-indicator {
+  position: absolute;
+  bottom: 36px;
+  left: 48px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  animation: heroFade 1s 0.6s ease both;
+}
+
+.scroll-line {
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--muted));
+  animation: scrollPulse 2s infinite;
+}
+
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+@keyframes heroFade {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ── SECTIONS ── */
+section { padding: 100px 0; }
+.container { max-width: 1100px; margin: 0 auto; padding: 0 48px; }
+@media(max-width:768px) { .container { padding: 0 20px; } section { padding: 64px 0; } }
+
+.section-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+.section-tag::before {
+  content: '';
+  width: 20px; height: 1px;
+  background: var(--muted);
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+/* ── SOBRE MÍ ── */
+.about { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+@media(max-width:768px) { .about-grid { grid-template-columns: 1fr; gap: 40px; } }
+
+.about-text p {
+  font-size: 1rem;
+  line-height: 1.85;
+  color: var(--muted2);
+  font-weight: 300;
+  margin-bottom: 18px;
+}
+
+.about-text p strong { color: var(--text); font-weight: 500; }
+
+.about-visual {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.about-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  transition: border-color 0.3s;
+}
+
+.about-card:hover { border-color: var(--border2); }
+.about-card:first-child { grid-column: 1 / -1; }
+
+.about-card-icon { font-size: 1.4rem; margin-bottom: 10px; }
+.about-card-title { font-weight: 700; font-size: 0.88rem; margin-bottom: 4px; }
+.about-card-sub { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+
+/* ── SKILLS ── */
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+  margin-top: 48px;
+}
+
+.skill-pill {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--muted2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.skill-pill:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(0,229,255,0.04);
+}
+
+.skill-pill .skill-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+/* ── PROYECTOS ── */
+.projects { background: var(--bg); }
+
+.projects-intro {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 56px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+@media(max-width:768px) { .projects-grid { grid-template-columns: 1fr; } }
+
+.project-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  position: relative;
+}
+
+.project-card:hover {
+  border-color: var(--border2);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+
+.project-card.featured {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+@media(max-width:768px) { .project-card.featured { grid-column: 1; grid-template-columns: 1fr; } }
+
+.project-visual {
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.project-card.featured .project-visual { height: 100%; min-height: 240px; }
+
+.project-visual.v1 { background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); }
+.project-visual.v2 { background: linear-gradient(135deg, #0a0f1a 0%, #1a0a2e 100%); }
+.project-visual.v3 { background: linear-gradient(135deg, #0f1a0a 0%, #1a2e0a 100%); }
+.project-visual.v4 { background: linear-gradient(135deg, #1a0a0a 0%, #2e0a0a 100%); }
+
+.project-visual::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  filter: blur(0);
+  transition: filter 0.3s;
+}
+
+.project-card:hover .project-visual::before { filter: blur(2px); }
+
+.project-emoji { position: relative; z-index: 1; filter: drop-shadow(0 0 20px currentColor); }
+
+.project-body { padding: 24px; }
+.project-card.featured .project-body { padding: 32px; display: flex; flex-direction: column; justify-content: center; }
+
+.project-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.project-tag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(0,229,255,0.08);
+  color: var(--accent);
+  border: 1px solid rgba(0,229,255,0.15);
+}
+
+.project-tag.purple { background: rgba(124,58,237,0.08); color: #a78bfa; border-color: rgba(124,58,237,0.2); }
+.project-tag.amber { background: rgba(245,158,11,0.08); color: #fbbf24; border-color: rgba(245,158,11,0.2); }
+.project-tag.green { background: rgba(52,211,153,0.08); color: #6ee7b7; border-color: rgba(52,211,153,0.2); }
+
+.project-name {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.project-card.featured .project-name { font-size: 1.8rem; }
+
+.project-desc {
+  font-size: 0.85rem;
+  color: var(--muted2);
+  line-height: 1.7;
+  font-weight: 300;
+  margin-bottom: 20px;
+}
+
+.project-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.project-link {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: gap 0.2s;
+}
+
+.project-card:hover .project-link { gap: 10px; }
+
+.project-stack {
+  display: flex;
+  gap: 6px;
+}
+
+.stack-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--border2);
+}
+
+/* ── EXPERIENCIA ── */
+.experience { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+.exp-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 60px;
+  margin-top: 48px;
+}
+
+@media(max-width:768px) { .exp-grid { grid-template-columns: 1fr; gap: 32px; } }
+
+.exp-timeline { position: relative; }
+
+.exp-item {
+  padding: 20px 0 20px 24px;
+  border-left: 1px solid var(--border);
+  position: relative;
+  transition: border-color 0.3s;
+}
+
+.exp-item::before {
+  content: '';
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--border2);
+  position: absolute;
+  left: -4.5px;
+  top: 26px;
+  transition: background 0.3s;
+}
+
+.exp-item:hover::before { background: var(--accent); }
+.exp-item:hover { border-color: var(--border2); }
+
+.exp-period {
+  font-size: 0.72rem;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  font-family: 'DM Mono', monospace;
+  margin-bottom: 6px;
+}
+
+.exp-role { font-weight: 700; font-size: 0.95rem; margin-bottom: 2px; }
+.exp-company { font-size: 0.82rem; color: var(--accent); margin-bottom: 8px; }
+.exp-desc { font-size: 0.82rem; color: var(--muted2); line-height: 1.6; font-weight: 300; }
+
+.exp-highlight {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px;
+  height: fit-content;
+  position: sticky;
+  top: 100px;
+}
+
+.exp-highlight-title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  letter-spacing: -0.02em;
+}
+
+.highlight-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.83rem;
+  color: var(--muted2);
+  line-height: 1.5;
+}
+
+.highlight-item:last-child { border-bottom: none; }
+.highlight-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+
+/* ── CONTACTO ── */
+.contact { background: var(--bg); }
+
+.contact-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+@media(max-width:768px) { .contact-inner { grid-template-columns: 1fr; gap: 40px; } }
+
+.contact-text p {
+  font-size: 1rem;
+  color: var(--muted2);
+  line-height: 1.8;
+  font-weight: 300;
+  margin-top: 16px;
+}
+
+.contact-links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.contact-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--text);
+  transition: all 0.2s;
+}
+
+.contact-link:hover {
+  border-color: var(--border2);
+  background: var(--surface2);
+  transform: translateX(4px);
+}
+
+.contact-link-icon { font-size: 1.2rem; width: 32px; text-align: center; }
+.contact-link-label { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 2px; }
+.contact-link-value { font-size: 0.9rem; font-weight: 500; }
+.contact-link-arrow { margin-left: auto; color: var(--muted); font-size: 0.8rem; transition: transform 0.2s; }
+.contact-link:hover .contact-link-arrow { transform: translateX(4px); color: var(--accent); }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 28px 0;
+}
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.footer-copy { font-size: 0.78rem; color: var(--muted); }
+.footer-made { font-size: 0.78rem; color: var(--muted); }
+.footer-made span { color: var(--accent); }
+
+/* ── REVEAL ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible { opacity: 1; transform: none; }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">
+    <div class="dot"></div>
+    EV
+  </a>
+  <ul class="nav-links">
+    <li><a href="#sobre-mi">Sobre mí</a></li>
+    <li><a href="#proyectos">Proyectos</a></li>
+    <li><a href="#experiencia">Experiencia</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+  </ul>
+  <a href="mailto:vemiliano220@gmail.com" class="nav-contact">Contactar →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-status">
+      <div class="status-dot"></div>
+      Disponible para trabajar · Rosario, AR
+    </div>
+    <h1>
+      Emiliano<br>
+      <span class="line2">Ve<span class="accent">ga</span></span>
+    </h1>
+    <p class="hero-desc">
+      Desarrollador web con <strong>enfoque en IA aplicada</strong> y experiencia real en el sector gastronómico. Construyo soluciones digitales que resuelven problemas concretos — desde sistemas de gestión hasta pasarelas de pago e integraciones con WhatsApp.
+    </p>
+    <div class="hero-actions">
+      <a href="#proyectos" class="btn-main">Ver proyectos →</a>
+      <a href="https://github.com/EmilianoVega2023" target="_blank" class="btn-outline">GitHub ↗</a>
+    </div>
+  </div>
+  <div class="hero-scroll-indicator">
+    <div class="scroll-line"></div>
+    Scroll
+  </div>
+</section>
+
+<!-- SOBRE MÍ -->
+<section class="about" id="sobre-mi">
+  <div class="container">
+    <div class="about-grid">
+      <div class="reveal">
+        <div class="section-tag">Sobre mí</div>
+        <h2 class="section-title" style="margin-bottom:24px">Tecnología<br>con contexto real</h2>
+        <p>Estudiante de <strong>Tecnicatura Universitaria en IA (UNR)</strong> con varios años aprendiendo desarrollo web de forma autodidacta. Lo que me diferencia es que combiné esas dos cosas con experiencia directa en el mundo gastronómico — como mozo, bartender y runner — lo que me permitió entender los problemas desde adentro y construir soluciones para resolverlos.</p>
+        <p>Desarrollé e implementé un <strong>sistema de gestión de comandas</strong> que se usó en producción en un take-away real. Integré <strong>MercadoPago</strong> y <strong>WhatsApp Business</strong> en proyectos funcionales. Analizo datos financieros propios con Python. Aprendo rápido y me adapto tanto a entornos técnicos como a atención al cliente.</p>
+      </div>
+      <div class="reveal">
+        <div class="about-visual">
+          <div class="about-card">
+            <div class="about-card-icon">🎓</div>
+            <div class="about-card-title">Tecnicatura en IA — UNR</div>
+            <div class="about-card-sub">Estudiante activo. Conocimientos técnicos, análisis de datos y comprensión de modelos de lenguaje.</div>
+          </div>
+          <div class="about-card">
+            <div class="about-card-icon">⚡</div>
+            <div class="about-card-title">3+ años aprendiendo</div>
+            <div class="about-card-sub">Desarrollo web autodidacta con proyectos reales en producción.</div>
+          </div>
+          <div class="about-card">
+            <div class="about-card-icon">🍽</div>
+            <div class="about-card-title">Sector gastronómico</div>
+            <div class="about-card-sub">Mozo, bartender y runner. Entiendo el negocio que desarrollo.</div>
+          </div>
+          <div class="about-card">
+            <div class="about-card-icon">📈</div>
+            <div class="about-card-title">18.4% retorno anualizado</div>
+            <div class="about-card-sub">Gestión propia de inversiones con análisis de datos en Python.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SKILLS -->
+    <div class="reveal" style="margin-top:60px">
+      <div class="section-tag">Stack</div>
+      <div class="skills-grid">
+        <div class="skill-pill"><div class="skill-dot"></div>JavaScript</div>
+        <div class="skill-pill"><div class="skill-dot"></div>HTML5</div>
+        <div class="skill-pill"><div class="skill-dot"></div>CSS3</div>
+        <div class="skill-pill"><div class="skill-dot"></div>Python</div>
+        <div class="skill-pill"><div class="skill-dot"></div>Node.js</div>
+        <div class="skill-pill"><div class="skill-dot"></div>Git & GitHub</div>
+        <div class="skill-pill"><div class="skill-dot"></div>MercadoPago API</div>
+        <div class="skill-pill"><div class="skill-dot"></div>WhatsApp API</div>
+        <div class="skill-pill"><div class="skill-dot"></div>Google Maps API</div>
+        <div class="skill-pill"><div class="skill-dot"></div>IA Aplicada</div>
+        <div class="skill-pill"><div class="skill-dot"></div>Bash</div>
+        <div class="skill-pill"><div class="skill-dot"></div>Prompt Engineering</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROYECTOS -->
+<section class="projects" id="proyectos">
+  <div class="container">
+    <div class="projects-intro reveal">
+      <div>
+        <div class="section-tag">Proyectos</div>
+        <h2 class="section-title">Lo que construí</h2>
+      </div>
+      <a href="https://github.com/EmilianoVega2023" target="_blank" class="btn-outline">Ver todos en GitHub ↗</a>
+    </div>
+    <div class="projects-grid">
+
+      <!-- FEATURED -->
+      <div class="project-card featured reveal">
+        <div class="project-visual v2">
+          <span class="project-emoji">🍽</span>
+        </div>
+        <div class="project-body">
+          <div class="project-tags">
+            <span class="project-tag">JavaScript</span>
+            <span class="project-tag purple">MercadoPago</span>
+            <span class="project-tag green">WhatsApp</span>
+          </div>
+          <div class="project-name">Menú Online + Pasarela de Pago</div>
+          <p class="project-desc">Sistema completo para restaurantes: menú con carrito dinámico, integración con MercadoPago Checkout Pro y botón de WhatsApp Business que arma el pedido automáticamente. Backend en Node.js sin frameworks.</p>
+          <div class="project-footer">
+            <a href="https://emilianovega2023.github.io/LandingPage" target="_blank" class="project-link">Ver demo →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- COMANDAS -->
+      <div class="project-card reveal">
+        <div class="project-visual v1">
+          <span class="project-emoji">📋</span>
+        </div>
+        <div class="project-body">
+          <div class="project-tags">
+            <span class="project-tag">JavaScript</span>
+            <span class="project-tag amber">Producción real</span>
+          </div>
+          <div class="project-name">Sistema de Comandas</div>
+          <p class="project-desc">Sistema de gestión de pedidos en tiempo real implementado en un take-away real. Multi-pantalla, sin dependencias externas, con cronómetro por pedido.</p>
+          <div class="project-footer">
+            <a href="https://emilianovega2023.github.io/OrdenComanda" target="_blank" class="project-link">Ver demo →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- LANDING -->
+      <div class="project-card reveal">
+        <div class="project-visual v3">
+          <span class="project-emoji">🔥</span>
+        </div>
+        <div class="project-body">
+          <div class="project-tags">
+            <span class="project-tag">HTML/CSS</span>
+            <span class="project-tag green">Google Maps</span>
+          </div>
+          <div class="project-name">Landing Gastronómica</div>
+          <p class="project-desc">Landing page de restaurante con diseño oscuro y sofisticado, animaciones CSS, mapa integrado, formulario de reservas y secciones completas de menú y testimonios.</p>
+          <div class="project-footer">
+            <a href="https://emilianovega2023.github.io/LandingPage" target="_blank" class="project-link">Ver demo →</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCIA -->
+<section class="experience" id="experiencia">
+  <div class="container">
+    <div class="section-tag reveal">Trayectoria</div>
+    <h2 class="section-title reveal">Experiencia</h2>
+    <div class="exp-grid">
+      <div class="exp-timeline reveal">
+        <div class="exp-item">
+          <div class="exp-period">2023 — 2024</div>
+          <div class="exp-role">Desarrollador Web</div>
+          <div class="exp-company">Proyecto Take-Away (producción real)</div>
+          <div class="exp-desc">Diseñé e implementé un sistema de gestión de comandas que se usó en operaciones reales. JavaScript vanilla, multi-pantalla, sin dependencias.</div>
+        </div>
+        <div class="exp-item">
+          <div class="exp-period">2023 — 2024</div>
+          <div class="exp-role">Runner</div>
+          <div class="exp-company">Porter 1992</div>
+          <div class="exp-desc">Coordinación entre cocina y sala en entorno de alta rotación. Rapidez y organización bajo presión.</div>
+        </div>
+        <div class="exp-item">
+          <div class="exp-period">2022</div>
+          <div class="exp-role">Bartender</div>
+          <div class="exp-company">Anker</div>
+          <div class="exp-desc">Resolución de problemas bajo presión, gestión del tiempo y habilidades interpersonales.</div>
+        </div>
+        <div class="exp-item">
+          <div class="exp-period">2022</div>
+          <div class="exp-role">Mozo</div>
+          <div class="exp-company">King Beer</div>
+          <div class="exp-desc">Atención directa al cliente, trabajo en equipo y comunicación en entorno gastronómico.</div>
+        </div>
+      </div>
+      <div class="exp-highlight reveal">
+        <div class="exp-highlight-title">¿Por qué contratarme?</div>
+        <div class="highlight-item">
+          <div class="highlight-icon">🔗</div>
+          <div>Entiendo el negocio gastronómico desde adentro — construyo soluciones para problemas que viví en primera persona.</div>
+        </div>
+        <div class="highlight-item">
+          <div class="highlight-icon">🚀</div>
+          <div>Proyectos reales en producción, no solo ejercicios de curso. El sistema de comandas se usó en un negocio real.</div>
+        </div>
+        <div class="highlight-item">
+          <div class="highlight-icon">🤖</div>
+          <div>Integro IA en mi flujo de trabajo para entregar más rápido y con mejor calidad. Prompt engineering aplicado.</div>
+        </div>
+        <div class="highlight-item">
+          <div class="highlight-icon">📊</div>
+          <div>Analizo datos con Python — desde rendimiento de inversiones hasta análisis de operaciones de negocio.</div>
+        </div>
+        <div class="highlight-item">
+          <div class="highlight-icon">⚡</div>
+          <div>Aprendo rápido y me adapto. En 3 años pasé de cero a integrar APIs de pago, mapas y mensajería.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section class="contact" id="contacto">
+  <div class="container">
+    <div class="contact-inner">
+      <div class="reveal">
+        <div class="section-tag">Contacto</div>
+        <h2 class="section-title">Hablemos</h2>
+        <p>Estoy buscando oportunidades part-time o freelance en desarrollo web, atención al cliente con perfil tech, o cualquier proyecto interesante que combine tecnología con impacto real.</p>
+      </div>
+      <div class="contact-links reveal">
+        <a href="mailto:vemiliano220@gmail.com" class="contact-link">
+          <div class="contact-link-icon">✉️</div>
+          <div>
+            <div class="contact-link-label">Email</div>
+            <div class="contact-link-value">vemiliano220@gmail.com</div>
+          </div>
+          <div class="contact-link-arrow">→</div>
+        </a>
+        <a href="tel:+5493405500324" class="contact-link">
+          <div class="contact-link-icon">📞</div>
+          <div>
+            <div class="contact-link-label">Teléfono / WhatsApp</div>
+            <div class="contact-link-value">+54 340 550-0324</div>
+          </div>
+          <div class="contact-link-arrow">→</div>
+        </a>
+        <a href="https://github.com/EmilianoVega2023" target="_blank" class="contact-link">
+          <div class="contact-link-icon">💻</div>
+          <div>
+            <div class="contact-link-label">GitHub</div>
+            <div class="contact-link-value">EmilianoVega2023</div>
+          </div>
+          <div class="contact-link-arrow">↗</div>
+        </a>
+        <a href="https://www.linkedin.com/in/emiliano-vega" target="_blank" class="contact-link">
+          <div class="contact-link-icon">🔗</div>
+          <div>
+            <div class="contact-link-label">LinkedIn</div>
+            <div class="contact-link-value">Emiliano Vega</div>
+          </div>
+          <div class="contact-link-arrow">↗</div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-copy">© 2026 Emiliano Vega — Rosario, Argentina</div>
+      <div class="footer-made">Hecho con <span>HTML · CSS · JS</span> + IA aplicada</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── CURSOR ──
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx - 4 + 'px';
+  cursor.style.top = my - 4 + 'px';
+});
+
+function animateRing() {
+  rx += (mx - rx - 18) * 0.12;
+  ry += (my - ry - 18) * 0.12;
+  ring.style.left = rx + 'px';
+  ring.style.top = ry + 'px';
+  requestAnimationFrame(animateRing);
+}
+animateRing();
+
+document.querySelectorAll('a, button').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cursor.style.transform = 'scale(2.5)';
+    ring.style.transform = 'scale(1.4)';
+    ring.style.borderColor = 'rgba(0,229,255,0.8)';
+  });
+  el.addEventListener('mouseleave', () => {
+    cursor.style.transform = 'scale(1)';
+    ring.style.transform = 'scale(1)';
+    ring.style.borderColor = 'rgba(0,229,255,0.4)';
+  });
+});
+
+// ── NAV ──
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// ── REVEAL ──
+const observer = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 80);
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
